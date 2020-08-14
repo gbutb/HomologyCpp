@@ -1,0 +1,14 @@
+# Ignore workspace-specific files
+build/*
+build*/*
+.vscode/*
+libs/*
+*.dylib
+docs/*
+
+# Ignore OS specific files
+.DS_Store
+
+# Ignore garbage
+garbage/*
+*.obj

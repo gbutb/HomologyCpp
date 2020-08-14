@@ -32,3 +32,6 @@ include_directories(
 if (BUILD_TESTS)
     add_subdirectory(tests/)
 endif()
+
+# Add main executable
+add_executable(main main.cpp)

@@ -25,6 +25,11 @@ class ChainComplex {
     Eigen::MatrixXf _d1;
     Eigen::MatrixXf _d2;
 
+    bool _d1_decomp_computed = false;
+    Eigen::FullPivLU<Eigen::MatrixXf> _d1_decomp;
+    bool _d2_decomp_computed = false;
+    Eigen::FullPivLU<Eigen::MatrixXf> _d2_decomp;
+
     // Properties of the mesh
     bool _orientable;
     int b0 = -1, b1 = -1, b2 = -1;
@@ -52,7 +57,7 @@ class ChainComplex {
             // Iterate over each edge of face_i
             for (int edge_i = 0; edge_i < 3; ++edge_i) {
                 EdgeType* edge = face.FEp(edge_i);
-                int edge_orientation = (edge->V(0) == face.V(0) ? 1 : -1);
+                int edge_orientation = (edge->V(0) == face.V(edge_i) ? 1 : -1);
                 if (!edge->IsV()) {
                     // Update d1 boundary map
                     d1(edge->V(0) - &mesh.vert.at(0), edge - &mesh.edge.at(0)) += 1;
@@ -75,6 +80,23 @@ class ChainComplex {
         vcg::tri::UpdateTopology<MeshType>::FaceFace(mesh);
         vcg::tri::Clean<MeshType>::OrientCoherentlyMesh(mesh, isOriented, orientable);
         vcg::tri::UpdateTopology<MeshType>::AllocateEdge(mesh);
+        vcg::tri::UpdateSelection<MeshType>::Clear(mesh);
+    }
+
+    /**
+     * A shorthand for quickly initializing decomps.
+     * @param decomp a decomposition to be initialized with mat.
+     * @param mat matrix using which decomposition is initialized, if not initialized.
+     * @param initialized has no effect if true. Once function concludes
+     *      the boolean is set to true.
+     */
+    static void initializeDecomp(
+            Eigen::FullPivLU<Eigen::MatrixXf>& decomp,
+            Eigen::MatrixXf& mat,
+            bool& initialized) {
+        if (initialized) return;
+        decomp.compute(mat);
+        initialized = true;
     }
 
  public:
@@ -91,7 +113,6 @@ class ChainComplex {
         _num_faces = mesh.face.size();
         _num_edges = mesh.edge.size();
         _num_vertices = mesh.vert.size();
-
 
         computeBoundaryMaps(mesh, _d1, _d2);
     }
@@ -111,13 +132,23 @@ class ChainComplex {
      * @param i index of betti number.
      * @return i-th betti number. -1 if invalid index.
      */
-    int getBetti(int i) const {
+    int getBetti(int i) {
         switch (i) {
             case 0:
+                if (b0 != -1) return b0;
+                initializeDecomp(_d1_decomp, _d1, _d1_decomp_computed);
+                return (b0 = _num_vertices - _d1_decomp.rank());
                 break;
             case 1:
+                if (b1 != -1) return b1;
+                initializeDecomp(_d1_decomp, _d1, _d1_decomp_computed);
+                initializeDecomp(_d2_decomp, _d2, _d2_decomp_computed);
+                return (b1 = _d1_decomp.dimensionOfKernel() - _d2_decomp.rank());
                 break;
             case 2:
+                if (b2 != -1) return b2;
+                initializeDecomp(_d2_decomp, _d2, _d2_decomp_computed);
+                return (b2 = _d2_decomp.dimensionOfKernel());
                 break;
         }
         return -1;
@@ -127,7 +158,12 @@ class ChainComplex {
      * @return Euler Characteristic
      *      of the mesh.
      */
-    int eulerCharacteristic() const;
+    int getEulerCharacteristic() {
+        int eulerChar = 0;
+        for (int i = 0; i < 3; ++i)
+            eulerChar += getBetti(i) * (i % 2 == 0 ? 1 : -1);
+        return eulerChar;
+    }
 };
 
 #endif  // HOMOLOGY_CHAINCOMPLEX_HPP_

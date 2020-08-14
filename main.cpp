@@ -59,5 +59,14 @@ int main() {
     std::cout << std::endl;
     std::cout << complex.getd(2) << std::endl;
 
+    Eigen::MatrixXf mat = complex.getd(1)*complex.getd(2);
+    assert(mat.isZero(0));
+
+    for (int i = 0; i < 3; ++i) {
+        std::cout << "getBetti(" << i << ") " << complex.getBetti(i) << std::endl;
+    }
+
+    std::cout << "Euler Char. = " << complex.getEulerCharacteristic() << std::endl;
+
     return EXIT_SUCCESS;
 }

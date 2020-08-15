@@ -15,7 +15,6 @@
 #include <vcg/complex/algorithms/update/topology.h>
 
 // Other
-#include <wrap/io_trimesh/export_obj.h>
 #include <eigenlib/Eigen/Core>
 
 namespace homology {

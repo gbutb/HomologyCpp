@@ -5,6 +5,7 @@
  */
 
 #include "gtest/gtest.h"
+
 #include <homology/mesh.hpp>
 #include <homology/ChainComplex.hpp>
 using homology::ChainComplex;

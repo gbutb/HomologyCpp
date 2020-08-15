@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
-project(Homology VERSION 0.0.1 LANGUAGES CXX)
+project(Homology VERSION 1.0.0 LANGUAGES CXX)
 
 # Set default options
 option(BUILD_TESTS "BUILD_TESTS" ON)
+option(BUILD_EXAMPLES "BUILD_EXAMPLES" ON)
 
 IF(APPLE)
     set(CMAKE_THREAD_LIBS_INIT "-lpthread")
@@ -36,5 +37,6 @@ if (BUILD_TESTS)
     add_subdirectory(tests/)
 endif()
 
-# Add main executable
-add_executable(main main.cpp)
+if (BUILD_EXAMPLES)
+    add_subdirectory(examples/)
+endif()

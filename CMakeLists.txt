@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(Homology VERSION 0.0.1 LANGUAGES CXX)
 
+# Set default options
+option(BUILD_TESTS "BUILD_TESTS" ON)
+
 IF(APPLE)
     set(CMAKE_THREAD_LIBS_INIT "-lpthread")
     set(CMAKE_HAVE_THREADS_LIBRARY 1)

@@ -1,0 +1,16 @@
+name: GTest
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: GTest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test project with googletest.
+        uses: CyberZHG/github-action-gtest@master
+        with:
+          args: "-d . -e tests/main_test

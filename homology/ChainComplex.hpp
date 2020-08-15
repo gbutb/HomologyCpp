@@ -150,6 +150,9 @@ class ChainComplex {
                 initializeDecomp(_d2_decomp, _d2, _d2_decomp_computed);
                 return (b2 = _d2_decomp.dimensionOfKernel());
                 break;
+            default:
+                return 0;
+                break;
         }
         return -1;
     }

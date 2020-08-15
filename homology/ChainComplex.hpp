@@ -18,6 +18,8 @@
 #include <wrap/io_trimesh/export_obj.h>
 #include <eigenlib/Eigen/Core>
 
+namespace homology {
+
 template<class MeshType, class FaceType, class EdgeType, class VertexType>
 class ChainComplex {
  private:
@@ -168,5 +170,7 @@ class ChainComplex {
         return eulerChar;
     }
 };
+
+}  // homology
 
 #endif  // HOMOLOGY_CHAINCOMPLEX_HPP_

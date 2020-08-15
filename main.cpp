@@ -8,6 +8,7 @@
 
 #include <homology/mesh.hpp>
 #include <homology/ChainComplex.hpp>
+using homology::ChainComplex;
 
 #include <iostream>
 
